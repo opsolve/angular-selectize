@@ -62,13 +62,22 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
                 });
 
                 if (!angular.equals(selectize.items, scope.ngModel)) {
-                    selectize.addOption(generateOptions(scope.ngModel));
+                    if (selectize.settings.plugins.indexOf("enableType") !== - 1 && selectize.settings.create) {
+                        selectize.addOption(generateOptions(scope.ngModel));
+                    }
                     selectize.setValue(scope.ngModel);
                 }
             }
 
             var onChange = config.onChange,
-                onOptionAdd = config.onOptionAdd;
+                onOptionAdd = config.onOptionAdd,
+                onType = config.onType;
+
+            config.onType = function (value) {
+                if (selectize.settings.plugins.indexOf("enableType") !== - 1) {
+                    modelCtrl.$setViewValue(value);
+                }
+            }
 
             config.onChange = function () {
                 if (scope.disableOnChange)
