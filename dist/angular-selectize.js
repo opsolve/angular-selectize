@@ -55,6 +55,7 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
                 selectize.$control.toggleClass('ng-invalid', modelCtrl.$invalid);
                 selectize.$control.toggleClass('ng-dirty', modelCtrl.$dirty);
                 selectize.$control.toggleClass('ng-pristine', modelCtrl.$pristine);
+                selectize.$control.toggleClass('ng-touched', modelCtrl.$touched);
 
                 selectize.setValue(scope.ngModel);
                 selectize.on("blur", function () {
