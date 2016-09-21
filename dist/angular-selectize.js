@@ -137,6 +137,9 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
                     selectize.clearOptions();
                     selectize.addOption(scope.options);
                     scope.disableOnChange = false;
+                    if (scope.ngModel) {
+                        updateSelectize();
+                    }
                 }, true);
 
                 scope.$watchCollection('ngModel', updateSelectize);
