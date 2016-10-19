@@ -127,6 +127,10 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
                     selectize.$control.addClass('ng-touched');
                 });
 
+                selectize.on('dropdown_open', function (dropdown) {
+                    angular.element(dropdown).css("width", attrs.width);
+                });
+
                 //provides a way to access the selectize element from an
                 //angular controller
                 if (angularCallback) {
