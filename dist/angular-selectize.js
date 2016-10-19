@@ -128,7 +128,12 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
                 });
 
                 selectize.on('dropdown_open', function (dropdown) {
-                    angular.element(dropdown).css("width", attrs.width);
+                    if (attrs.width) {
+                        dropdown.css("width", attrs.width);
+                        if (attrs.expandTo === "left") {
+                            dropdown.css("left", selectize.$control.outerWidth() + dropdown.position().left - dropdown.outerWidth());
+                        }
+                    }
                 });
 
                 //provides a way to access the selectize element from an
