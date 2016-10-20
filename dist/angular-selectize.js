@@ -127,9 +127,11 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
                     selectize.$control.addClass('ng-touched');
                 });
 
-                selectize.on('dropdown_open', function (dropdown) {
-                    if (attrs.width) {
-                        dropdown.css("width", attrs.width);
+                selectize.on("dropdown_open", function (dropdown) {
+                    var customWidth = Number(attrs.width);
+
+                    if (!isNaN(customWidth) && customWidth > selectize.$control.outerWidth()) {
+                        dropdown.css("width", customWidth);
                         if (attrs.expandTo === "left") {
                             dropdown.css("left", selectize.$control.outerWidth() + dropdown.position().left - dropdown.outerWidth());
                         }
