@@ -85,6 +85,10 @@ angular.module('selectize', []).value('selectizeConfig', {}).directive("selectiz
                     return;
 
                 if (!angular.equals(selectize.items, scope.ngModel))
+                    if (selectize.settings.mode === "multi") {
+                        selectize.addOption(generateOptions(scope.ngModel));
+                    }
+                    
                     scope.$evalAsync(function () {
                         var value = angular.copy(selectize.items);
                         if (config.maxItems == 1) {
