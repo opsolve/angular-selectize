@@ -70,7 +70,14 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
                 }
 
                 angular.element(document).on("click", "div.selectize-input div.item", function (event) {
-                    selectize.removeItem(event.currentTarget.innerText);
+                    if (selectize.items.length > 0) {
+                        angular.forEach(selectize.options, function (index, data) {
+                            if (selectize.options[data].label === event.currentTarget.innerText) {
+                                selectize.removeItem(selectize.options[data].value);
+                            }
+                        });
+                    }
+
                     if (selectize.items.length === 0) {
                         selectize.close();
                         selectize.blur();
