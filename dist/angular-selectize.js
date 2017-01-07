@@ -7,7 +7,15 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
     return {
         restrict: "EA",
         require: "^ngModel",
-        scope: { ngModel: "=", config: "=?", options: "=?", ngDisabled: "=", ngRequired: "&" },
+        scope: {
+            ngModel: "=",
+            config: "=?",
+            options: "=?",
+            itemSelected: "&?",
+            ngBlur: "&?",
+            ngDisabled: "=",
+            ngRequired: "&"
+        },
         link: function (scope, element, attrs, modelCtrl) {
 
             Selectize.defaults.maxItems = null; //default to tag editor
@@ -86,9 +94,16 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
 
             }
 
-            var onChange = config.onChange,
+            var onBlur = config.onBlur,
+                onChange = config.onChange,
                 onOptionAdd = config.onOptionAdd,
                 onType = config.onType;
+
+            config.onBlur = function () {
+                if (scope.ngBlur) {
+                    scope.ngBlur();
+                }
+            }
 
             config.onType = function (value) {
                 if (selectize.settings.plugins.indexOf("enableType") !== -1) {
@@ -100,10 +115,14 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
                 if (scope.disableOnChange)
                     return;
 
-                if (!angular.equals(selectize.items, scope.ngModel))
+                if (selectize.items.indexOf(scope.ngModel) === -1) {
                     if (selectize.settings.mode === "multi") {
                         selectize.addOption(generateOptions(scope.ngModel));
                     }
+                    if (scope.itemSelected) {
+                        scope.itemSelected({ value: angular.copy(selectize.items)[0] });
+                    }
+                }
 
                 scope.$evalAsync(function () {
                     var value = angular.copy(selectize.items);
