@@ -106,6 +106,10 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             }
 
             config.onType = function (value) {
+                if (value.length === 0) {
+                    selectize.$dropdown_content.removeHighlight();
+                }
+
                 if (selectize.settings.plugins.indexOf("enableType") !== -1) {
                     modelCtrl.$setViewValue(value);
                 }
