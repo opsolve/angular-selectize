@@ -116,6 +116,16 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             }
 
             config.onChange = function () {
+                var selectizeDependents = angular.element(document).find("[data-dependent=" + attrs.name + "]");
+
+                angular.forEach(selectizeDependents, function (dependent) {
+                    if (dependent.selectize.isDisabled === false) {
+                        dependent.selectize.disable();
+                        dependent.selectize.clear();
+                        angular.element(dependent).attr("data-locked-by", attrs.name);
+                    }
+                });
+
                 if (scope.disableOnChange)
                     return;
 
@@ -142,6 +152,13 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             };
 
             config.onOptionAdd = function (value, data) {
+                if (element[0].hasAttribute("data-locked-by") && !element[0].hasAttribute("data-os-permission-approved") ||
+                    (element[0].hasAttribute("data-locked-by") &&
+                    element[0].hasAttribute("data-os-permission-approved")) &&
+                    JSON.parse(element[0].getAttribute("data-os-permission-approved"))) {
+                    element[0].selectize.enable();
+                    element.removeAttr("data-locked-by");
+                }
                 if (scope.options.indexOf(data) === -1) {
                     scope.options.push(data);
 
