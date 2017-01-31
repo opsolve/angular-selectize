@@ -117,15 +117,17 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             }
 
             config.onChange = function () {
-                var selectizeDependents = angular.element(document).find("[data-dependent=" + attrs.name + "]");
+                if (element[0].selectize.items.length > 0) {
+                    var selectizeDependents = angular.element(document).find("[data-dependent=" + attrs.name + "]");
 
-                angular.forEach(selectizeDependents, function (dependent) {
-                    if (dependent.selectize.isDisabled === false) {
-                        dependent.selectize.disable();
-                        dependent.selectize.clear();
-                        angular.element(dependent).attr("data-locked-by", attrs.name);
-                    }
-                });
+                    angular.forEach(selectizeDependents, function (dependent) {
+                        if (dependent.selectize.isDisabled === false) {
+                            dependent.selectize.disable();
+                            dependent.selectize.clear();
+                            angular.element(dependent).attr("data-locked-by", attrs.name);
+                        }
+                    });
+                }
 
                 if (scope.disableOnChange)
                     return;
