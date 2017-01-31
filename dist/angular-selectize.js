@@ -14,6 +14,7 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             itemSelected: "&?",
             ngBlur: "&?",
             ngDisabled: "=",
+            osDisabled: "=",
             ngRequired: "&"
         },
         link: function (scope, element, attrs, modelCtrl) {
@@ -152,7 +153,9 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             };
 
             config.onOptionAdd = function (value, data) {
-                if (element[0].hasAttribute("data-locked-by") && !element[0].hasAttribute("data-os-permission-approved") ||
+                if (!scope.osDisabled &&
+                    element[0].hasAttribute("data-locked-by") &&
+                    !element[0].hasAttribute("data-os-permission-approved") ||
                     (element[0].hasAttribute("data-locked-by") &&
                     element[0].hasAttribute("data-os-permission-approved")) &&
                     JSON.parse(element[0].getAttribute("data-os-permission-approved"))) {
