@@ -3,7 +3,7 @@
  * https://github.com/machineboy2045/angular-selectize
  **/
 
-angular.module("selectize", []).value("selectizeConfig", {}).directive("selectize", ["selectizeConfig", function (selectizeConfig) {
+angular.module("selectize", []).value("selectizeConfig", {}).directive("selectize", ["selectizeConfig", "$parse", function (selectizeConfig, $parse) {
     return {
         restrict: "EA",
         require: "^ngModel",
@@ -155,11 +155,11 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             };
 
             config.onOptionAdd = function (value, data) {
-                if (!scope.osDisabled &&
-                    element[0].hasAttribute("data-locked-by") &&
-                    !element[0].hasAttribute("data-os-permission-approved") ||
-                    (element[0].hasAttribute("data-locked-by") &&
-                    element[0].hasAttribute("data-os-permission-approved")) &&
+                if (!$parse(attrs.osDisabled)(scope) &&
+                    (element[0].hasAttribute("data-locked-by") && !element[0].hasAttribute("data-os-permission-approved") ||
+                    (element[0].hasAttribute("data-locked-by") && element[0].getAttribute("data-os-permission-approved") === true)) &&
+                    (element[0].hasAttribute("data-locked-by") && !element[0].hasAttribute("data-os-disabled-from-parent") ||
+                    (element[0].hasAttribute("data-locked-by") && element[0].getAttribute("data-os-disabled-from-parent") === false)) &&
                     JSON.parse(element[0].getAttribute("data-os-permission-approved"))) {
                     element[0].selectize.enable();
                     element.removeAttr("data-locked-by");
