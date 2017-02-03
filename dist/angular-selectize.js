@@ -3,7 +3,7 @@
  * https://github.com/machineboy2045/angular-selectize
  **/
 
-angular.module("selectize", []).value("selectizeConfig", {}).directive("selectize", ["selectizeConfig", "$parse", function (selectizeConfig, $parse) {
+angular.module("selectize", []).value("selectizeConfig", {}).directive("selectize", ["selectizeConfig", function (selectizeConfig) {
     return {
         restrict: "EA",
         require: "^ngModel",
@@ -155,7 +155,7 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             };
 
             config.onOptionAdd = function (value, data) {
-                if (element[0].hasAttribute("data-locked-by") && !$parse(attrs.osDisabled)(scope) &&
+                if (element[0].hasAttribute("data-locked-by") && !scope.osDisabled &&
                     (!element[0].hasAttribute("data-os-permission-approved") || JSON.parse(element[0].getAttribute("data-os-permission-approved")) === true) &&
                     (!element[0].hasAttribute("data-os-disabled-from-parent") || JSON.parse(element[0].getAttribute("data-os-disabled-from-parent")) === false)) {
                     element[0].selectize.enable();
