@@ -11,6 +11,7 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             ngModel: "=",
             config: "=?",
             options: "=?",
+            optgroups: "=?",
             itemSelected: "&?",
             ngBlur: "&?",
             ngDisabled: "=",
@@ -98,6 +99,7 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
             var onBlur = config.onBlur,
                 onChange = config.onChange,
                 onOptionAdd = config.onOptionAdd,
+                onOptionGroupAdd = config.onOptionGroupAdd
                 onType = config.onType;
 
             config.onBlur = function () {
@@ -172,6 +174,15 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
                 }
             };
 
+            config.onOptionGroupAdd = function (id, data) {
+                if (scope.optgroups.indexOf(data) === -1)
+                    scope.optgroups.push(data);
+
+                if (onOptionGroupAdd) {
+                    onOptionGroupAdd.apply(this, arguments);
+                }
+            };
+
             if (scope.options) {
                 // replace scope options with generated options while retaining a reference to the same array
                 scope.options.splice(0, scope.options.length, generateOptions(scope.options));
@@ -180,11 +191,16 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
                 scope.options = generateOptions(angular.copy(scope.ngModel));
             }
 
+            scope.optgroups = (scope.optgroups || config.optgroups).slice();
+
             var angularCallback = config.onInitialize;
 
             config.onInitialize = function () {
                 selectize = element[0].selectize;
                 selectize.addOption(scope.options);
+                $.map(scope.optgroups, function (g) {
+                    selectize.addOptionGroup(g[config.optgroupValueField], g);
+                });
                 selectize.setValue(scope.ngModel);
 
                 selectize.on("blur", function () {
@@ -216,6 +232,13 @@ angular.module("selectize", []).value("selectizeConfig", {}).directive("selectiz
                     if (scope.ngModel) {
                         updateSelectize();
                     }
+                }, true);
+
+                scope.$watch('optgroups', function () {
+                    selectize.clearOptionGroups();
+                    $.map(scope.optgroups, function (g) {
+                        selectize.addOptionGroup(g[config.optgroupValueField], g);
+                    });
                 }, true);
 
                 scope.$watchCollection("ngModel", updateSelectize);
